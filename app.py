@@ -34,10 +34,6 @@ flipper_length = st.number_input('Flipper length (in mm)')
 body_mass = st.number_input('Body mass (in g)')
 sex = st.text_input('Sex ("Male" or "Female")')
 
-
-api_url = "http://localhost:8000/predict"
-
-
 params = dict(island=location,
         bill_length_mm=bill_length,
         bill_depth_mm=bill_depth,
@@ -47,7 +43,7 @@ params = dict(island=location,
         )
 
 request = requests.get(
-    api_url,
+    st.secrets["API_URL"],
     params)
 
 result = request.json()
