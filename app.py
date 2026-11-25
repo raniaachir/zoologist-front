@@ -1,4 +1,5 @@
 import streamlit as st
+import requests
 
 """
 # Zoologist front
@@ -12,9 +13,10 @@ Either like the title above by just creating a string (or an f-string) starting.
 """
 )
 
-# """
-# ## Here we would like to add some controllers in order to ask the user to input the characteristics of the penguin.
-# # We need to know all the inputs required by our model to make a prediction.
+"""
+Here we would like to add some controllers in order to ask the user to input the characteristics of the penguin.
+We need to know all the inputs required by our model to make a prediction.
+"""
 
 # 1. Let's ask for:
 # - island (the location where the penguin lives: Biscoe, Dream or Torgersen)
@@ -25,31 +27,30 @@ Either like the title above by just creating a string (or an f-string) starting.
 # - sex ("Male" or "Female")
 # """
 
-st.text_input('Location')
-st.text_input('Bill length (in mm)')
-st.text_input('Bill depth (in mm)')
-st.text_input('Flipper length (in mm)')
-st.text_input('Body mass (in g)')
-st.text_input('Sex ("Male" or "Female")')
+location = st.text_input('Location')
+bill_length = st.number_input('Bill length (in mm)')
+bill_depth = st.number_input('Bill depth (in mm)')
+flipper_length = st.number_input('Flipper length (in mm)')
+body_mass = st.number_input('Body mass (in g)')
+sex = st.text_input('Sex ("Male" or "Female")')
 
 
-"""
-## Once we have these, let's call our API in order to retrieve a prediction
+api_url = "http://localhost:8000/predict"
 
-See ? No need to load a `model.joblib` file in this app, we do not even need to know
-anything about Data Science in order to retrieve a prediction...
 
-🤔 How could we call our API ? Of course... The `requests` package 💡
+params = dict(island=location,
+        bill_length_mm=bill_length,
+        bill_depth_mm=bill_depth,
+        flipper_length_mm=flipper_length,
+        body_mass_g=body_mass,
+        sex=sex
+        )
 
-What are the steps to follow in order to call an API ?
+request = requests.get(
+    api_url,
+    params)
 
-1. Which url will you use? Save it in a variable so you can easily change it later...
+result = request.json()
+species = result.get("prediction")
 
-2. Let's build a dictionary containing the parameters for our API...
-
-3. Let's call our API using the `requests` package...
-
-4. Let's retrieve the prediction from the **JSON** returned by the API...
-
-## Finally, we can display the prediction to the user
-"""
+st.markdown(f"Your penguin is from the specie {species}!")
